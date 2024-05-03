@@ -1,7 +1,10 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:animated_text_kit/animated_text_kit.dart'; // Import for color animation
+import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:proyect/usuarios.dart'; // Import for color animation
 
 class registro extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
@@ -10,32 +13,44 @@ class registro extends StatelessWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final DatabaseReference _database = FirebaseDatabase().reference();
 
-  void _registerUser(BuildContext context) async {
-    try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+  registro({super.key});
+
+void _registerUser(BuildContext context) async {
+  try {
+    UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      email: _emailController.text,
+      password: _passwordController.text,
+    );
+
+    if (userCredential.user != null) {
+      String userID = userCredential.user!.uid;
+      _database.child('usuarios').child(userID).set({
+        'rol': 'usuario',
+        'nombre': _nameController.text,
+      });
+
+      // Iniciar sesión después del registro exitoso
+      await _auth.signInWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
       );
 
-      if (userCredential.user != null) {
-        String userID = userCredential.user!.uid;
-        _database.child('usuarios').child(userID).set({
-          'rol': 'usuario',
-          'nombre': _nameController.text,
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Cuenta creada.'),
-        ));
-
-        Navigator.pushReplacementNamed(context, '/main_tareas');
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Error: $e'),
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Cuenta creada.'),
       ));
+
+       Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => userScreen()),
+      );
     }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('Error: $e'),
+    ));
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +61,7 @@ class registro extends StatelessWidget {
           animatedTexts: [
             ColorizeAnimatedText(
               'Registro',
-              textStyle: TextStyle(
+              textStyle: const TextStyle(
                 fontSize: 50.0, // Adjust font size as desired
                 fontWeight: FontWeight.bold,
               ),
@@ -56,34 +71,34 @@ class registro extends StatelessWidget {
                 Colors.red,
               ],
               textAlign: TextAlign.center,
-              speed: Duration(milliseconds: 1000), // Adjust animation speed
+              speed: const Duration(milliseconds: 1000), // Adjust animation speed
             ),
           ],
           repeatForever: true, // Set to true for continuous animation
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(labelText: 'Correo electrónico'),
+              decoration: const InputDecoration(labelText: 'Correo electrónico'),
             ),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Contraseña'),
+              decoration: const InputDecoration(labelText: 'Contraseña'),
               obscureText: true,
             ),
             TextField(
               controller: _nameController,
-              decoration: InputDecoration(labelText: 'Nombre'),
+              decoration: const InputDecoration(labelText: 'Nombre'),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () => _registerUser(context),
-              child: Text('Registrarse'),
+              child: const Text('Registrarse'),
             ),
           ],
         ),

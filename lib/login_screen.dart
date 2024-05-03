@@ -12,6 +12,8 @@ class LoginScreen extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  LoginScreen({super.key});
+
   Future<void> _signInWithEmailAndPassword(BuildContext context) async {
     try {
       final UserCredential userCredential = await _auth.signInWithEmailAndPassword(
@@ -31,7 +33,7 @@ class LoginScreen extends StatelessWidget {
 
       if (snapshot.value != null) { // Check if there's any data
         final userData = snapshot.value as Map<dynamic, dynamic>;
-        if (userData != null && userData['rol'] == "admin") {
+        if (userData['rol'] == "admin") {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => adminScreen()), // Replace with your admin screen
@@ -71,7 +73,7 @@ class LoginScreen extends StatelessWidget {
           animatedTexts: [
             ColorizeAnimatedText(
               'Login',
-              textStyle: TextStyle(
+              textStyle: const TextStyle(
                 fontSize: 50.0, // Adjust font size as desired
                 fontWeight: FontWeight.bold,
               ),
@@ -81,35 +83,35 @@ class LoginScreen extends StatelessWidget {
                 Colors.red,
               ],
               textAlign: TextAlign.center,
-              speed: Duration(milliseconds: 1000), // Adjust animation speed
+              speed: const Duration(milliseconds: 1000), // Adjust animation speed
             ),
           ],
           repeatForever: true, // Set to true for continuous animation
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(labelText: 'Correo electrónico'),
+              decoration: const InputDecoration(labelText: 'Correo electrónico'),
             ),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Contraseña'),
+              decoration: const InputDecoration(labelText: 'Contraseña'),
               obscureText: true,
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () => _signInWithEmailAndPassword(context),
-              child: Text('Iniciar sesión'),
+              child: const Text('Iniciar sesión'),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             TextButton(
               onPressed: () => _goToRegister(context),
-              child: Text('Registrarse'),
+              child: const Text('Registrarse'),
             ),
           ],
         ),
