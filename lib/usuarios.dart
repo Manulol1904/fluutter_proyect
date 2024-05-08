@@ -33,6 +33,7 @@ class userScreen extends StatelessWidget {
       ),
     );
   }
+
   Widget _checkUserRole(BuildContext context, User user) {
     final userId = user.uid;
     final userRef = FirebaseDatabase.instance.ref().child("usuarios").child(userId);
@@ -47,28 +48,29 @@ class userScreen extends StatelessWidget {
             // Obtener el nombre de usuario
             final userName = userData['nombre'];
             
-            // Consultar las tareas asignadas al usuario actual
+            // Consultar las tareas asignadas al usuario actual y obtener sus IDs
             final tasksRef = FirebaseDatabase.instance.ref().child("tareas").orderByChild('nombre').equalTo(userName);
             
             return StreamBuilder<DatabaseEvent>(
-            stream: tasksRef.onValue,
-            builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              final tasksEventData = snapshot.data!;
-              final tasksData = tasksEventData.snapshot.value as Map<dynamic, dynamic>?;
+              stream: tasksRef.onValue,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  final tasksEventData = snapshot.data!;
+                  final tasksData = tasksEventData.snapshot.value as Map<dynamic, dynamic>?;
 
-              if (tasksData != null && tasksData.isNotEmpty) {
-                final List<Map<dynamic, dynamic>> tasksList = tasksData.values.toList().cast<Map<dynamic, dynamic>>();
-                return TaskListWidget(tasksList);
-              } else {
-                // Si no hay tareas asignadas al usuario, muestra un mensaje
-                return const Center(child: Text('No tienes tareas asignadas.'));
-              }
-         } else {
-            return const Center(child: CircularProgressIndicator());
-       }
-  },
-);
+                  if (tasksData != null && tasksData.isNotEmpty) {
+                    final List<String> taskIds = tasksData.keys.toList().cast<String>(); // Obtener los IDs de las tareas
+                    final List<Map<dynamic, dynamic>> tasksList = tasksData.values.toList().cast<Map<dynamic, dynamic>>();
+                    return TaskListWidget(tasksList, taskIds, userData['rol'] ); // Pasar los IDs a TaskListWidget
+                  } else {
+                    // Si no hay tareas asignadas al usuario, muestra un mensaje
+                    return const Center(child: Text('No tienes tareas asignadas.'));
+                  }
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              },
+            );
           } else {
             // Si el usuario no es usuario, simplemente muestra un mensaje
             return const Center(child: Text('No tiene permiso para acceder a esta pantalla.'));
@@ -80,4 +82,3 @@ class userScreen extends StatelessWidget {
     );
   }
 }
-
