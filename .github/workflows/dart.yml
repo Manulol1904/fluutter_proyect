@@ -1,4 +1,4 @@
-name: Flutter Build and Test (iOS)
+name: Flutter Build (Android)
 
 on:
   push:
@@ -10,12 +10,12 @@ on:
 
 jobs:
   build:
-    name: Build and Test
-    runs-on: macos-latest
+    name: Flutter Build and Test (Android)
+    runs-on: macos-latest-with-android # Replace with an Android runner
     steps:
-      - uses: actions/checkout@v3  # Update to latest checkout action (consider Node.js 20 compatibility)
+      - uses: actions/checkout@v3
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.x'  # Update to latest stable version
+          flutter-version: '3.x'
       - run: flutter pub get
-      - run: flutter build ios
+      - run: flutter build android
