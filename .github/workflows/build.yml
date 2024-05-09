@@ -1,32 +1,31 @@
-name: Build and Deploy
-
+name: Flutter Build and Test (Android)
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  build_and_deploy:
+  build:
+    name: Build and Test
     runs-on: ubuntu-latest
-    
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-      
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '2.x'
-        
-    - name: Install dependencies
-      run: flutter pub get
-      
-    - name: Build APK
-      run: flutter build apk
-      
-    - name: Deploy APK
-      uses: ncipollo/release-action@v1
-      with:
-        artifacts: build/app/outputs/flutter-apk/app-release.apk
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '2.14.0'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk
+
+      - name: Run tests
+        run: flutter test
+
