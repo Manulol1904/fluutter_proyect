@@ -13,5 +13,6 @@ jobs:
         with:
           channel: stable
       - run: flutter pub get
-      - run: flutter format
+      - run: dart format 
       - run: flutter analyze
+
