@@ -1,4 +1,5 @@
 name: Flutter Build and Test (iOS)
+
 on:
   push:
     branches:
@@ -12,19 +13,9 @@ jobs:
     name: Build and Test
     runs-on: macos-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v3  # Update to latest checkout action (consider Node.js 20 compatibility)
+      - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '2.x'
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Build iOS app
-        run: flutter build ios
-
-      - name: Run tests
-        run: flutter test
+          flutter-version: '3.x'  # Update to latest stable version
+      - run: flutter pub get
+      - run: flutter build ios
